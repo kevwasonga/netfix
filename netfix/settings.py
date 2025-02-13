@@ -127,6 +127,5 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'users.CustomUser'
-
+LOGIN_URL = "/users/login/"
+AUTH_USER_MODEL = "users.CustomUser"  # default user model

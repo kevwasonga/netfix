@@ -14,7 +14,7 @@
         <div style="display: ruby;">
             <h1>{{ user.username }}</h1>
             <p> {{ user.email }}</p>
-            <p style="float: right;">{{ user.company_profile.field_of_work }} Company</p>
+            <p style="float: right;">{{user.company.field}} Company</p>
         </div>
        {% endif %}
     {% if 'customer' in request.path %}

@@ -1,9 +1,9 @@
 from django.urls import path
-from . import views
+from .views import field_services_view, services_list_view, request_service_view, single_service_view
 
 urlpatterns = [
-    path('', views.services_list_view, name='services_list'),  # List all services
-    path('field/<str:field>/', views.field_services_view, name='field_services'),  # Filter by field
-    path('<int:id>/', views.single_service_view, name='single_service'),  # Single service details
-    path('<int:id>/request/', views.request_service_view, name='request_service'),  # Request service
+    path('', services_list_view, name='services_list'),
+    path('<str:field>/', field_services_view, name='field_services'),
+    path('<int:id>/', single_service_view, name='single_service'),
+    path('<int:id>/request/', request_service_view, name='request_service'),
 ]
