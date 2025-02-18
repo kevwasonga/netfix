@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as django_logout
 
-# View for the home page
-def home_view(request):
-    return render(request, 'main/home.html')
 
-# View for the logout page
-#@login_required
-def logout_view(request):
-    return render(request, 'main/logout.html')
+def home(request):
+    return render(request, "main/home.html", {})
+
+
+def logout(request):
+    django_logout(request)
+    return render(request, "main/logout.html")
