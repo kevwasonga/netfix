@@ -1,91 +1,61 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
-from .models import CustomerProfile, CompanyProfile, CustomUser
-from services.models import Service, ServiceRequest
-from .forms import CustomerRegistrationForm, CompanyRegistrationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.views.generic import CreateView, TemplateView
 
-# ✅ Register Selection Page
+from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
+from .models import User, Company, Customer
+
+
 def register(request):
-    return render(request, "users/register.html")
+    return render(request, 'users/register.html')
 
-# ✅ Register a Customer
-def register_customer(request):
-    if request.method == "POST":
-        form = CustomerRegistrationForm(request.POST)
+
+class CustomerSignUpView(CreateView):
+    model = User
+    form_class = CustomerSignUpForm
+    template_name = 'users/register_customer.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'customer'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
+
+
+class CompanySignUpView(CreateView):
+    model = User
+    form_class = CompanySignUpForm
+    template_name = 'users/register_company.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'company'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
+
+
+def LoginUserView(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("user_profile")
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            # Authenticate the user using email and password.
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')  # Redirect to a homepage or dashboard
+            else:
+                # If authentication fails, add a form-wide error message.
+                form.add_error(None, "Invalid email or password.")
     else:
-        form = CustomerRegistrationForm()
-    return render(request, "users/register_customer.html", {"form": form})
-
-# ✅ Register a Company
-def register_company(request):
-    if request.method == "POST":
-        form = CompanyRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("user_profile")
-    else:
-        form = CompanyRegistrationForm()
-    return render(request, "users/register_company.html", {"form": form})
-
-# ✅ User Profile Page
-@login_required
-def user_profile(request):
-    user = request.user
-    context = {"user": user}
-
-    if user.is_customer:
-        profile = get_object_or_404(CustomerProfile, user=user)  
-        requested_services = ServiceRequest.objects.filter(customer=profile)  # 🔥 FIX APPLIED (Used `profile` instead of `user`)
-        context.update({"profile": profile, "requested_services": requested_services})
-
-    elif user.is_company:
-        profile = get_object_or_404(CompanyProfile, user=user)
-        company_services = Service.objects.filter(company=profile)  # 🔥 FIX APPLIED (Used `profile` instead of `user`)
-        context.update({"profile": profile, "company_services": company_services})
-
-    return render(request, "users/profile.html", context)
-
-# ✅ Customer Profile View
-@login_required
-def CustomerProfileView(request, username):
-    """ Display a customer's profile and their requested services """
-    user = get_object_or_404(CustomUser, username=username)
-    profile = get_object_or_404(CustomerProfile, user=user)
-    requested_services = ServiceRequest.objects.filter(customer=profile)  # 🔥 FIX APPLIED (Used `profile` instead of `user`)
-
-    return render(request, "users/profile.html", {
-        "profile": profile,
-        "requested_services": requested_services,
-        "is_customer": True
-    })
-
-# ✅ Company Profile View
-def CompanyProfileView(request, username):
-    """ Displays a company's profile and its offered services """
-    user = get_object_or_404(CustomUser, username=username)
+        form = UserLoginForm()
     
-    # Ensure user has a company profile
-    if not hasattr(user, "company_profile"):
-        return render(request, "users/company_not_found.html")  # Error page if no company profile exists
+    return render(request, 'users/login.html', {'form': form})
 
-    profile = user.company_profile
-    company_services = Service.objects.filter(company=profile)  # 🔥 FIX APPLIED (Used `profile` instead of `user`)
-
-    return render(request, "users/company_profile.html", {
-        "profile": profile,
-        "company_services": company_services,
-        "is_company": True
-    })
-
-# ✅ Debugging CSRF Issues
-from django.views.decorators.csrf import csrf_exempt
-
-@csrf_exempt  # ❌ Not recommended for production
-def my_view(request):
-    return render(request, "users/login.html")

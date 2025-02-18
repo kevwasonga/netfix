@@ -1,17 +1,18 @@
 from django.contrib import admin
-from .models import CustomUser, CustomerProfile, CompanyProfile
 
-@admin.register(CustomUser)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "is_customer", "is_company", "is_staff")
-    list_filter = ("is_customer", "is_company")
-    search_fields = ("username", "email")
+from .models import User, Customer, Company
 
-@admin.register(CustomerProfile)
-class CustomerProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "date_of_birth")
 
-@admin.register(CompanyProfile)
-class CompanyProfileAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("id", "username", "email")
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
     list_display = ("user", "field_of_work")
-    list_filter = ("field_of_work",)
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ("user", "date_of_birth")
