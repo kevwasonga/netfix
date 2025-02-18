@@ -1,25 +1,28 @@
-"""
-URL configuration for netfix project.
+"""netfix URL Configuration
 
-Routes URLs to views:
-- Django Admin Panel
-- Main app (homepage)
-- Services app
-- Users app (authentication & profiles)
-- Customer & Company profile views
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.11/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.conf.urls import url, include
+    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
 from django.urls import include, path
-from users import views as v  # Import views from users app
+
+from . import views as v
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # ✅ Django Admin Panel
-    path('', include('main.urls')),  # ✅ Homepage & main app
-    path('services/', include('services.urls')),  # ✅ Service-related routes
-    path('users/', include('users.urls')),  # ✅ Handles registration & profiles
-    
-    # ✅ Profile pages (Updated Naming)
-    path('customer/<str:username>/', v.CustomerProfileView, name='customer_profile'),
-    path('company/<str:username>/', v.CompanyProfileView, name='company_profile'),
+    path('admin/', admin.site.urls),
+    path('', include('main.urls')),
+    path('services/', include('services.urls')),
+    path('register/', include('users.urls')),
+    path('customer/<slug:name>', v.customer_profile, name='customer_profile'),
+    path('company/<slug:name>', v.company_profile, name='company_profile')
 ]
