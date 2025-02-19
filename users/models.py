@@ -3,10 +3,18 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
+
 class User(AbstractUser):
+    email = models.EmailField(unique=True)  # 👈 Use EmailField instead of CharField
     is_company = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
-    email = models.CharField(max_length=100, unique=True)
+
+    USERNAME_FIELD = 'email'  # 👈 Users log in with email instead of username
+    REQUIRED_FIELDS = ['username']  # 👈 Keeps username for backward compatibility
+
+    def __str__(self):
+        return self.email
+
 
 
 
@@ -16,7 +24,7 @@ class Customer(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)  # Ensure this field exists
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 
 
 
