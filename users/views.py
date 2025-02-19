@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView,DetailView, TemplateView
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
 from .models import User, Company, Customer
@@ -58,4 +58,11 @@ def LoginUserView(request):
         form = UserLoginForm()
     
     return render(request, 'users/login.html', {'form': form})
+
+
+class UserProfileView(DetailView):
+    model = User
+    template_name = "users/profile.html"  # Create this template
+    context_object_name = "user"
+
 
