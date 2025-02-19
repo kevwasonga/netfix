@@ -59,7 +59,7 @@ def LoginUserView(request):
     
     return render(request, 'users/login.html', {'form': form})
 
-
+# this view show the profile of individual users via url (example) http://127.0.0.1:8000/register/profile/1/
 class UserProfileView(DetailView):
     model = User
     template_name = "users/profile.html"  # Create this template
