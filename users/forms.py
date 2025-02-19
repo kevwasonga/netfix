@@ -28,7 +28,7 @@ class CustomerSignUpForm(UserCreationForm):
     date_of_birth = forms.DateField(required=True, widget=DateInput())
 
     class Meta:
-        model = Customer
+        model = User
         fields = ["username", "email", "password1", "password2", "date_of_birth"]
 
     @transaction.atomic
@@ -53,7 +53,7 @@ class CompanySignUpForm(UserCreationForm):
         attrs={'placeholder': 'Enter Field of Work'}))
 
     class Meta:
-        model = Company
+        model = User
         fields = ["username", "email", "password1", "password2", "field_of_work"]
 
     @transaction.atomic
