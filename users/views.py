@@ -4,6 +4,12 @@ from django.views.generic import CreateView,DetailView, TemplateView
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
 from .models import User, Company, Customer
+from django.urls import reverse_lazy
+from users.models import User, Company
+from services.models import Service
+
+from django.contrib.auth.views import LoginView
+
 
 
 def register(request):
@@ -40,24 +46,18 @@ class CompanySignUpView(CreateView):
         return redirect('/')
 
 
-def LoginUserView(request):
-    if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            # Authenticate the user using email and password.
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('/')  # Redirect to a homepage or dashboard
-            else:
-                # If authentication fails, add a form-wide error message.
-                form.add_error(None, "Invalid email or password.")
-    else:
-        form = UserLoginForm()
-    
-    return render(request, 'users/login.html', {'form': form})
+class CustomLoginView(LoginView):
+    template_name = "users/login.html"  
+    authentication_form = UserLoginForm  
+
+    def get_success_url(self):
+        return reverse_lazy("home")  
+
+    def form_invalid(self, form):
+        # Add custom logic for failed login attempts
+        form.add_error(None, "Invalid email or password.")
+        return self.render_to_response(self.get_context_data(form=form))
+
 
 # this view show the profile of individual users via url (example) http://127.0.0.1:8000/register/profile/1/
 class UserProfileView(DetailView):
