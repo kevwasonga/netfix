@@ -44,6 +44,12 @@ INSTALLED_APPS = [
     'services',
     'users'
 ]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",  # Default authentication
+]
+
+LOGIN_REDIRECT_URL = "home"  
+LOGOUT_REDIRECT_URL = "login"  # Redirect after logout
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
