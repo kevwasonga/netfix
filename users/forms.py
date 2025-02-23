@@ -50,8 +50,12 @@ class CompanySignUpForm(UserCreationForm):
         attrs={'placeholder': 'Enter Password'}))
     password2 = forms.CharField(widget=forms.PasswordInput(
         attrs={'placeholder': 'Confirm Password'}))
-    field_of_work = forms.CharField(max_length=255, required=True, widget=forms.TextInput(
-        attrs={'placeholder': 'Enter Field of Work'}))
+    
+    # Change to ChoiceField to match model field
+    field_of_work = forms.ChoiceField(
+        choices=Company._meta.get_field('field_of_work').choices,
+        required=True
+    )
 
     class Meta:
         model = User
@@ -60,10 +64,13 @@ class CompanySignUpForm(UserCreationForm):
     @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_company = True
+        user.is_company = True  # Mark as a company
         if commit:
             user.save()
+            # ✅ Create the Company object linked to the user
+            Company.objects.create(user=user, field_of_work=self.cleaned_data['field_of_work'])
         return user
+
 
 
 class UserLoginForm(AuthenticationForm):  # Inherit from AuthenticationForm
