@@ -14,8 +14,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-
-
 class Customer(models.Model):
     user = models.OneToOneField('users.User', on_delete=models.CASCADE, primary_key=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -23,34 +21,42 @@ class Customer(models.Model):
     def __str__(self):
         return self.user.email
 
+# ✅ Automatically set `is_customer = True` when a Customer is created
+@receiver(post_save, sender=Customer)
+def mark_user_as_customer(sender, instance, created, **kwargs):
+    if created:
+        instance.user.is_customer = True
+        instance.user.save()
+# ✅ Define choices outside for easy modification
+FIELD_OF_WORK_CHOICES = [
+    ('Air Conditioner', 'Air Conditioner'),
+    ('All in One', 'All in One'),
+    ('Carpentry', 'Carpentry'),
+    ('Electricity', 'Electricity'),
+    ('Gardening', 'Gardening'),
+    ('Home Machines', 'Home Machines'),
+    ('House Keeping', 'House Keeping'),
+    ('Interior Design', 'Interior Design'),
+    ('Locks', 'Locks'),
+    ('Painting', 'Painting'),
+    ('Plumbing', 'Plumbing'),
+    ('Water Heaters', 'Water Heaters')
+]
 
 class Company(models.Model):
     user = models.OneToOneField('users.User', on_delete=models.CASCADE, primary_key=True)
     field_of_work = models.CharField(
         max_length=70,
-        choices=[
-            ('Air Conditioner', 'Air Conditioner'),
-            ('All in One', 'All in One'),
-            ('Carpentry', 'Carpentry'),
-            ('Electricity', 'Electricity'),
-            ('Gardening', 'Gardening'),
-            ('Home Machines', 'Home Machines'),
-            ('House Keeping', 'House Keeping'),
-            ('Interior Design', 'Interior Design'),
-            ('Locks', 'Locks'),
-            ('Painting', 'Painting'),
-            ('Plumbing', 'Plumbing'),
-            ('Water Heaters', 'Water Heaters')
-        ],
+        choices=FIELD_OF_WORK_CHOICES,
         blank=False, null=False
     )
     rating = models.IntegerField(
-        validators=[MaxValueValidator(5), MinValueValidator(0)], default=0
+        validators=[MaxValueValidator(5), MinValueValidator(0)], 
+        default=0
     )
 
     def __str__(self):
-        return self.user.email  # Ensure email is used for consistency
-
+        return self.user.email  
 
 # ✅ Automatically set `is_company = True` when a Company is created
 @receiver(post_save, sender=Company)
