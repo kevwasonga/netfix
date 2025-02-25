@@ -9,6 +9,7 @@ from users.models import User, Company
 from services.models import Service
 
 from django.contrib.auth.views import LoginView
+from services.models import RequestService
 
 
 
@@ -61,8 +62,14 @@ class CustomLoginView(LoginView):
 
 # this view show the profile of individual users via url (example) http://127.0.0.1:8000/register/profile/1/
 class UserProfileView(DetailView):
-    model = User
+    model = Customer
     template_name = "users/profile.html"  # Create this template
     context_object_name = "user"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["service_requests"] = RequestService.objects.filter(customer=self.object)
+        return context
+
 
 
