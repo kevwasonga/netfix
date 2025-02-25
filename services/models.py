@@ -1,9 +1,12 @@
 from django.db import models
+from django import forms
+from django.utils import timezone
+
 
 # Create your models here.
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from users.models import Company, Customer
+from users.models import Company, Customer, User
 
 
 class Service(models.Model):
@@ -32,3 +35,13 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RequestService(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    address = models.CharField(max_length=255, null=True, blank=True)  # Allow null values
+    hours = models.PositiveIntegerField(default=1)  # Default to 1 hour
+    request_date = models.DateTimeField(default=timezone.now)
+    def total_cost(self):
+        return self.hours * self.service.price_hour
