@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 class User(AbstractUser):
     email = models.EmailField(unique=True)  
     is_company = models.BooleanField(default=False)
@@ -64,3 +65,6 @@ def mark_user_as_company(sender, instance, created, **kwargs):
     if created:
         instance.user.is_company = True
         instance.user.save()
+
+
+
