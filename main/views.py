@@ -9,7 +9,7 @@ from services.models import RequestService  # Import your model
 def home(request):
     # Fetch the top 5 most requested services
     top_services = (
-        RequestService.objects.values('service__id', 'service__name')
+        RequestService.objects.values('service__id', 'service__name', 'service__field','service__company__user__email')
         .annotate(request_count=Count('service'))
         .order_by('-request_count')[:5]
     )
