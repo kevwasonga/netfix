@@ -2,11 +2,13 @@ from django.db import models
 from django import forms
 from django.utils import timezone
 
+from users.models import User
+
 
 # Create your models here.
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from users.models import Company, Customer, User
+from users.models import Company
 
 
 class Service(models.Model):
@@ -45,3 +47,14 @@ class RequestService(models.Model):
     request_date = models.DateTimeField(default=timezone.now)
     def total_cost(self):
         return self.hours * self.service.price_hour
+
+
+
+from django.db import models
+from users.models import User
+from services.models import Service
+from django.utils import timezone
+
+
+
+
