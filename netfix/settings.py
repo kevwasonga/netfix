@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     # apps created
     'main',
     'services',
-    'users'
+    'users',
+    
 ]
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # Default authentication
