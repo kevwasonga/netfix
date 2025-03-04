@@ -9,7 +9,7 @@ from django.contrib import messages
 from .models import Service
 from .forms import CreateNewService, RequestServiceForm
 
-
+@login_required  
 def service_list(request):
     services = Service.objects.all().order_by("-date")
     return render(request, 'services/list.html', {'services': services})
