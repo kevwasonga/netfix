@@ -1,11 +1,27 @@
 {% extends 'main/base.html' %} 
-    {% block title %}
-        NetFix
-    {% endblock %}
+{% load static %}
+
+{% block title %}
+    NetFix
+{% endblock %}
 
 {% block content %}
     <div style="margin-top: 50px;">
         <p class="site_title">NetFix</p>
-        <img class="home_logo" src="static/css/logo.png" alt="logo">
+        <img class="home_logo" src="{% static 'css/logo.png' %}" alt="logo">
     </div>
+
+    <h2> Most Requested Services</h2>
+    <ul>
+        {% for service in top_services %}
+            <li>
+                {{ service.service__name }} ({{ service.request_count }} requests)
+                {% if is_customer %}
+                    <a href="{% url 'request_service' service.service__id %}">Request</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <p>No services requested yet.</p>
+        {% endfor %}
+    </ul>
 {% endblock %}
