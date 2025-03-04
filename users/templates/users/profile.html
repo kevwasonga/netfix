@@ -27,17 +27,24 @@
     </p>
 
     {% if user.is_customer %}
-        {% for service in service_requests %}
-            <div>
-                <a href="/services/{{ service.service.id }}">{{ service.service.name }}</a> ({{ service.service.field_of_work }})
-                <p style="margin: 0; display: inline-block;"> ❱❱ {{ service.price }}</p>
-                <p style="margin: 0; display: inline-block;"> ❱❱ {{ service.request_date }}</p>
-                <p style="float: right; margin: 0;">
-                    by <a href="/company/{{ service.service.company.id }}">{{ service.service.company.user.email }}</a>
-                </p> 
-            </div>
-            <div class="line"></div>
-        {% endfor %}
+    <h2>Your Requested Services</h2>
+
+    {% if requested_services %}
+        <ul>
+            {% for service in requested_services %}
+                <li>
+                    <strong>{{ service.name }}</strong>  
+                    - Requested on {{ service.request_date|date:"M d, Y" }} 
+                    {% if service.status %}
+                        (Status: {{ service.status }})
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have not requested any services yet.</p>
+    {% endif %}
+    
     {% else %}
         {% for service in services %}
             <div class="list_services_profile">
