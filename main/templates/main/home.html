@@ -11,11 +11,14 @@
         <img class="home_logo" src="{% static 'css/logo.png' %}" alt="logo">
     </div>
 
-    <h2> Most Requested Services</h2>
+    <h2>Most Requested Services</h2>
     <ul>
         {% for service in top_services %}
-            <li>
-                {{ service.service__name }} ({{ service.request_count }} requests)
+            <li style="margin-bottom: 15px;"> 
+                <b>
+                    {{ service.service__name }} - {{ service.service__company__name }} - {{ service.service__field }}  
+                    ({{ service.request_count }} requests) - created by {{ service.service__company__user__email }}
+                </b>
                 {% if is_customer %}
                     <a href="{% url 'request_service' service.service__id %}">Request</a>
                 {% endif %}
