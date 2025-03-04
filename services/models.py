@@ -50,11 +50,5 @@ class RequestService(models.Model):
 
 
 
-from django.db import models
-from users.models import User
-from services.models import Service
-from django.utils import timezone
-
-
 
 
