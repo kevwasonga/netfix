@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     return render(request, 'users/home.html', {'user': request.user})
 
-
+@login_required
 def customer_profile(request, name):
     user = get_object_or_404(User, username=name)  # Get user by name or show 404
     requested_services = RequestService.objects.filter(customer=user)  # Fetch services
