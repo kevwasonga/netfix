@@ -34,7 +34,7 @@
     <ul>
         {% for service in requested_services %}
             <li>
-                <a href="{% url 'request_service' service.service.id %}" style="text-decoration: none; color: inherit;">
+                <a href="{% url 'request_service' service.service.id %}" style="text-decoration: none; color: rgb(226, 72, 45);">
                     <strong>{{ service.service.name }}</strong>
                 </a> 
                 >> ({{ service.service.field }}),  
