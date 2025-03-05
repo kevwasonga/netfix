@@ -27,23 +27,30 @@
     </p>
 
     {% if user.is_customer %}
-    <h2>Your Requested Services</h2>
+    
 
     {% if requested_services %}
-        <ul>
-            {% for service in requested_services %}
-                <li>
-                    <strong>{{ service.name }}</strong>  
-                    - Requested on {{ service.request_date|date:"M d, Y" }} 
-                    {% if service.status %}
-                        (Status: {{ service.status }})
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You have not requested any services yet.</p>
-    {% endif %}
+   
+    <ul>
+        {% for service in requested_services %}
+            <li>
+                <a href="{% url 'request_service' service.service.id %}" style="text-decoration: none; color: inherit;">
+                    <strong>{{ service.service.name }}</strong>
+                </a> 
+                >> ({{ service.service.field }}),  
+                -- Price per hour: {{ service.service.price_hour }}€,  
+                - Requested on {{ service.request_date|date:"M d, Y" }}  
+                {{ service.request_date|time:"H:i" }}
+                {% if service.status %}
+                    (Status: {{ service.status }})
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not requested any services yet.</p>
+{% endif %}
+
     
     {% else %}
         {% for service in services %}
