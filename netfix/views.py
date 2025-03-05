@@ -22,9 +22,7 @@ def customer_profile(request, name):
         "user": user,
         "requested_services": requested_services
     })
-#reminder
-#update all details to be displayed on both customer and company profiles
-    
+
 
 @login_required
 def company_profile(request, name):
