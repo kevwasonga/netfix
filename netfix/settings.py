@@ -46,8 +46,10 @@ INSTALLED_APPS = [
     
 ]
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",  # Default authentication
+    "users.authentication.UsernameOrEmailBackend",  # Custom backend
+    "django.contrib.auth.backends.ModelBackend",  # Default fallback
 ]
+
 
 LOGIN_REDIRECT_URL = "home"  
 LOGOUT_REDIRECT_URL = "login"  # Redirect after logout
