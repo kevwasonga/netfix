@@ -37,7 +37,8 @@ class CustomerSignUpForm(UserCreationForm):
         user.is_customer = True
         if commit:
             user.save()
-            Customer.objects.create(user=user)
+            if not hasattr(user, "customer"): 
+             Customer.objects.create(user=user)
         return user
 
 
@@ -64,21 +65,25 @@ class CompanySignUpForm(UserCreationForm):
     @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_company = True  # Mark as a company
+        user.is_company = True  
         if commit:
             user.save()
+            if not hasattr(user, "company"): 
             # ✅ Create the Company object linked to the user
-            Company.objects.create(user=user, field_of_work=self.cleaned_data['field_of_work'])
+             Company.objects.create(user=user, field_of_work=self.cleaned_data['field_of_work'])
         return user
 
 
 
-class UserLoginForm(AuthenticationForm):  # Inherit from AuthenticationForm
-    email = forms.EmailField(widget=forms.TextInput(
-        attrs={'placeholder': 'Enter Email', 'autocomplete': 'off'}))
+
+class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'Enter Email or Username', 'autocomplete': 'off'})
+    )
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}))
-    
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'})
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['autocomplete'] = 'off'
+        self.fields['username'].widget.attrs['autocomplete'] = 'off'
