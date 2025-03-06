@@ -21,6 +21,9 @@ class CustomerSignUpView(CreateView):
     model = User
     form_class = CustomerSignUpForm
     template_name = 'users/register_customer.html'
+    success_url = "/" 
+
+
 
     def get_context_data(self, **kwargs):
         kwargs['user_type'] = 'customer'
@@ -28,14 +31,16 @@ class CustomerSignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
-        return redirect('/')
-
+        user.backend = "django.contrib.auth.backends.ModelBackend"  
+        login(self.request, user, backend=user.backend)  
+        return super().form_valid(form)
 
 class CompanySignUpView(CreateView):
     model = User
     form_class = CompanySignUpForm
     template_name = 'users/register_company.html'
+    success_url = "/" 
+
 
     def get_context_data(self, **kwargs):
         kwargs['user_type'] = 'company'
@@ -43,8 +48,9 @@ class CompanySignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
-        return redirect('/')
+        user.backend = "django.contrib.auth.backends.ModelBackend"  # ✅ Set backend explicitly
+        login(self.request, user, backend=user.backend)  # ✅ Login user with backend
+        return super().form_valid(form)
 
 
 class CustomLoginView(LoginView):
@@ -52,11 +58,11 @@ class CustomLoginView(LoginView):
     authentication_form = UserLoginForm  
 
     def get_success_url(self):
-        return reverse_lazy("home")  
-
+     return "/"
+    
     def form_invalid(self, form):
         # Add custom logic for failed login attempts
-        form.add_error(None, "Invalid email or password.")
+        form.add_error(None, "Invalid email, username or password.")
         return self.render_to_response(self.get_context_data(form=form))
 
 
