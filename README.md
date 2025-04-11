@@ -93,7 +93,7 @@ AUTH_USER_MODEL = 'users.User'
 This project is licensed under the MIT License.
 
 ## Contributors
-- Your Name - [GitHub](https://github.com/yourusername)
+- Your Name - [GitHub](https://github.com/kevwasonga)
 
 ## Contact
 For any issues or contributions, please open a GitHub issue or contact the maintainers.
